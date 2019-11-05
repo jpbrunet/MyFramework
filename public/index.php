@@ -3,16 +3,24 @@ require_once '../vendor/autoload.php';
 
 use Framework\App;
 
-$renderer = new \App\Framework\Renderer\TwigRenderer(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'views');
+$modules = [
+    \App\Blog\BlogModule::class
+];
 
-$app = new App(
-    [
-        \App\Blog\BlogModule::class
-    ],
-    [
-        'renderer' => $renderer
-    ]
-);
-$demo = array();
+$builder = new \DI\ContainerBuilder();
+$builder->addDefinitions(dirname(__DIR__) . '/config/config.php');
+
+foreach ($modules as $module) {
+    if ($module::DEFINITIONS) {
+        $builder->addDefinitions($module::DEFINITIONS);
+    }
+}
+
+$builder->addDefinitions(dirname(__DIR__) . '/config.php');
+$container = $builder->build();
+
+$app = new App($container, $modules);
+
 $response = $app->run(\GuzzleHttp\Psr7\ServerRequest::fromGlobals());
+
 \Http\Response\send($response);
