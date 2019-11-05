@@ -3,25 +3,21 @@
  * Project Name:  MyFramework.
  * User: BRUNET JP
  * Date: 05/11/2019
- * Time: 01:17
+ * Time: 15:02
  */
 
-namespace Tests\Framework;
+namespace Tests\Framework\Renderer;
 
-use Framework\Renderer;
-use PHPUnit\Framework\TestCase;
+use Framework\Renderer\PHPRenderer;
 
-class RendererTest extends TestCase
+class PHPRendererTest
 {
-    /**
-     * @var Renderer
-     */
+
     private $renderer;
 
     public function setUp(): void
     {
-        $this->renderer = new Renderer();
-        $this->renderer->addPath(__DIR__ . '/views');
+        $this->renderer = new PHPRenderer(__DIR__ . '/views');
     }
 
     public function testRenderTheRightPath()

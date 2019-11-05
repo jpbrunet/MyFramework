@@ -6,11 +6,9 @@
  * Time: 01:16
  */
 
-namespace Framework;
+namespace Framework\Renderer;
 
-use phpDocumentor\Reflection\Types\Mixed_;
-
-class Renderer
+class PHPRenderer implements RendererInterface
 {
     /**
      * Define a default namespace
@@ -27,6 +25,13 @@ class Renderer
      * @var array
      */
     private $globals = [];
+
+    public function __construct(?string $defaultPath = null)
+    {
+        if (!is_null($defaultPath)) {
+            $this->addPath($defaultPath);
+        }
+    }
 
     /**
      * Allows you to add a path to load views
@@ -66,17 +71,6 @@ class Renderer
         return ob_get_clean();
     }
 
-    /**
-     * Allows you to add global variables to all views
-     * @param string $key
-     * @param mixed $value
-     */
-    public function addGlobal(string $key, $value): void
-    {
-        $this->globals[$key] = $value;
-    }
-
-
     /***
      * @param string $view
      * @return bool
@@ -90,18 +84,28 @@ class Renderer
      * @param string $view
      * @return string
      */
-    private function getNamesepace(string $view): string
+    private function replaceNamespace(string $view): string
     {
-        return substr($view, 1, strpos($view, '/') - 1);
+        $namespace = $this->getNamesepace($view);
+        return str_replace('@' . $namespace, $this->paths[$namespace], $view);
     }
 
     /**
      * @param string $view
      * @return string
      */
-    private function replaceNamespace(string $view): string
+    private function getNamesepace(string $view): string
     {
-        $namespace = $this->getNamesepace($view);
-        return str_replace('@' . $namespace, $this->paths[$namespace], $view);
+        return substr($view, 1, strpos($view, '/') - 1);
+    }
+
+    /**
+     * Allows you to add global variables to all views
+     * @param string $key
+     * @param mixed $value
+     */
+    public function addGlobal(string $key, $value): void
+    {
+        $this->globals[$key] = $value;
     }
 }
