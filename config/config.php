@@ -6,6 +6,10 @@ use Framework\Renderer\RendererInterface;
 use Framework\Router;
 
 return [
+    'database.host' => 'localhost',
+    'database.user' => 'root',
+    'database.pass' => 'root',
+    'database.name' => 'my_framework',
     'views.path' => dirname(__DIR__) . '/views',
     'twig.extensions' => [
         \DI\get(RouterTwigExtension::class)
