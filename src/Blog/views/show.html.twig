@@ -1,11 +1,9 @@
 {% extends 'layout.html.twig' %}
+{% set title = "Bienvenue sur l'article" %}
+{% block siteTitle slug %}
+ {% block title %}
+     {{slug}}
+ {% endblock %}
+     {% block body %}
 
-{% block title slug %}
-
-{% block body %}
-    <h1>Bienvenue sur l'article {{ slug }}</h1>
-        <div class="alert alert-success">
-        {{ demo() }}
-        </div>
-
-{% endblock %}
+     {% endblock %}

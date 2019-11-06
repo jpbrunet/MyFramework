@@ -1,5 +1,7 @@
 <?php
-require_once '../vendor/autoload.php';
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+header('content-type: text/html; charset=utf-8');
 
 use Framework\App;
 
@@ -21,6 +23,7 @@ $container = $builder->build();
 
 $app = new App($container, $modules);
 
-$response = $app->run(\GuzzleHttp\Psr7\ServerRequest::fromGlobals());
-
-\Http\Response\send($response);
+if (php_sapi_name() !== 'cli') {
+    $response = $app->run(\GuzzleHttp\Psr7\ServerRequest::fromGlobals());
+    \Http\Response\send($response);
+}
