@@ -1,9 +1,10 @@
 {% extends 'layout.html.twig' %}
-{% set title = "Bienvenue sur l'article" %}
-{% block siteTitle slug %}
- {% block title %}
-     {{slug}}
- {% endblock %}
-     {% block body %}
+{% set title = post.name %}
+{% set  subTitle = post.updated_at %}
+{% block siteTitle title %}
 
-     {% endblock %}
+{% block title title %}
+
+{% block body %}
+    {{ post.content | nl2br }}
+{% endblock %}

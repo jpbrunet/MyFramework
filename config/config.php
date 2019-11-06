@@ -18,8 +18,11 @@ return [
     Router::class => \DI\create(),
     RendererInterface::class => DI\factory(TwigRendererFactory::class),
     \PDO::class => function(\Psr\Container\ContainerInterface $c){
-        return new PDO(
+        $pdo = new PDO(
             'pgsql:host='.$c->get('database.host').';port='.$c->get('database.port').';dbname='.$c->get('database.name').';user='.$c->get('database.user').';password='.$c->get('database.pass')
         );
+        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        return $pdo;
     }
 ];

@@ -1,19 +1,19 @@
 {% extends 'layout.html.twig' %}
 {% set title = "Mes articles" %}
-{% block siteTitle "Mes articles"%}
+{% block siteTitle "Mes articles" %}
 
 
-  {% block title "Mes articles" %}
+{% block title title %}
 
 {% block body %}
-  <ul>
-    {% for post in posts %}
-      <li>
-        <a href="{{ path('blog.show', { slug: post.slug, id: post.id }) }}">
-          {{ post.name }}
-        </a>
-      </li>
-    {% endfor %}
-  </ul>
+    <ul>
+        {% for post in posts %}
+            <li>
+                <a href="{{ path('blog.show', { slug: post.slug, id: post.id }) }}">
+                    {{ post.name }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
 
 {% endblock %}
