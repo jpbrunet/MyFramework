@@ -13,7 +13,10 @@ return [
     'database.name' => 'my_framework',
     'views.path' => dirname(__DIR__) . '/views',
     'twig.extensions' => [
-        \DI\get(RouterTwigExtension::class)
+        \DI\get(RouterTwigExtension::class),
+        \DI\get(\App\Framework\Twig\PagerFantaExtension::class),
+        \DI\get(\App\Framework\Twig\TextExtension::class),
+        \DI\get(\App\Framework\Twig\TimeExtension::class)
     ],
     Router::class => \DI\create(),
     RendererInterface::class => DI\factory(TwigRendererFactory::class),

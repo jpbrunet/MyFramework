@@ -29,7 +29,9 @@ class RouterTest extends TestCase
     public function testGetMethod()
     {
         $request = new ServerRequest('GET', '/blog');
-        $this->router->get('/blog', function (){ return 'Hello'; }, 'blog');
+        $this->router->get('/blog', function () {
+            return 'Hello';
+        }, 'blog');
         $route = $this->router->match($request);
         $this->assertEquals('blog', $route->getName());
         $this->assertEquals('Hello', call_user_func($route->getCallBack(), $request));
@@ -38,7 +40,9 @@ class RouterTest extends TestCase
     public function testGetMethodIfURLDoesNotExists()
     {
         $request = new ServerRequest('GET', '/blog');
-        $this->router->get('/blogaze', function (){ return 'Hello'; }, 'blog');
+        $this->router->get('/blogaze', function () {
+            return 'Hello';
+        }, 'blog');
         $route = $this->router->match($request);
         $this->assertEquals(null, $route);
     }
@@ -46,8 +50,12 @@ class RouterTest extends TestCase
     public function testGetMethodWithParams()
     {
         $request = new ServerRequest('GET', '/blog/mon-slug-8');
-        $this->router->get('/blog', function(){ return 'azeaeze'; }, 'posts');
-        $this->router->get('/blog/{slug:[a-z0-9\-]+}-{id:\d+}', function(){ return 'Hello'; }, 'post.show');
+        $this->router->get('/blog', function () {
+            return 'azeaeze';
+        }, 'posts');
+        $this->router->get('/blog/{slug:[a-z0-9\-]+}-{id:\d+}', function () {
+            return 'Hello';
+        }, 'post.show');
         $route = $this->router->match($request);
         $this->assertEquals('post.show', $route->getName());
         $this->assertEquals('Hello', call_user_func($route->getCallBack(), $request));
@@ -59,10 +67,33 @@ class RouterTest extends TestCase
 
     public function testGenerateURI()
     {
-        $this->router->get('/blog', function(){ return 'azeaeze'; }, 'posts');
-        $this->router->get('/blog/{slug:[a-z0-9\-]+}-{id:\d+}', function(){ return 'Hello'; }, 'post.show');
+        $this->router->get('/blog', function () {
+            return 'azeaeze';
+        }, 'posts');
+        $this->router->get('/blog/{slug:[a-z0-9\-]+}-{id:\d+}', function () {
+            return 'Hello';
+        }, 'post.show');
         $uri = $this->router->generateURI('post.show', ['slug' => 'mon-article', 'id' => '18']);
         $this->assertEquals('/blog/mon-article-18', $uri);
+    }
+
+    public function testGenerateURIWithQueryParams()
+    {
+        $this->router->get('/blog', function () {
+            return 'azeaeze';
+        }, 'posts');
+        $this->router->get(
+            '/blog/{slug:[a-z0-9\-]+}-{id:\d+}',
+            function () {
+                return 'Hello';
+            },
+            'post.show');
+        $uri = $this->router->generateURI(
+            'post.show',
+            ['slug' => 'mon-article', 'id' => '18'],
+            ['p' => 2]
+        );
+        $this->assertEquals('/blog/mon-article-18?p=2', $uri);
     }
 
 }

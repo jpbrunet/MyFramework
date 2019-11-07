@@ -1,10 +1,9 @@
 {% extends 'layout.html.twig' %}
 {% set title = post.name %}
-{% set  subTitle = post.updated_at %}
+{% set  subTitle = post.updated_at | ago %}
 {% block siteTitle title %}
-
 {% block title title %}
 
 {% block body %}
-    {{ post.content | nl2br }}
+    {{ post.content | nl2br | raw }}
 {% endblock %}
