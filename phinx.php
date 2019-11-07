@@ -28,6 +28,7 @@ return [
             'port' => $app->getContainer()->get('database.port'),
             'charset' => 'utf8',
         ]
-    ]
+    ],
+
 ];
 
