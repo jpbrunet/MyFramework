@@ -4,11 +4,11 @@ namespace App\Blog\Actions;
 
 use App\Blog\Table\PostTable;
 use App\Framework\Actions\RouteAwareAction;
+use App\Framework\Session\FlashService;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use function DI\string;
 
 class AdminBlogAction
 {
@@ -29,6 +29,11 @@ class AdminBlogAction
      * @var PostTable
      */
     private $postTable;
+    /**
+     * @var FlashService
+     */
+    private $flash;
+
 
     use RouteAwareAction;
 
@@ -37,12 +42,18 @@ class AdminBlogAction
      * @param RendererInterface $renderer
      * @param Router $router
      * @param PostTable $postTable
+     * @param FlashService $flash
      */
-    public function __construct(RendererInterface $renderer, Router $router, PostTable $postTable)
-    {
+    public function __construct(
+        RendererInterface $renderer,
+        Router $router,
+        PostTable $postTable,
+        FlashService $flash
+    ) {
         $this->renderer = $renderer;
         $this->router = $router;
         $this->postTable = $postTable;
+        $this->flash = $flash;
     }
 
     public function __invoke(Request $request)
@@ -83,6 +94,7 @@ class AdminBlogAction
             $params = $this->getParams($request);
             $params['updated_at'] = date('Y-m-d H:i:s');
             $this->postTable->update($item->id, $params);
+            $this->flash->success("L'article à bien été modifié");
             return $this->redirect('admin.blog.index');
         }
 
@@ -114,6 +126,7 @@ class AdminBlogAction
                 'updated_at' => date('Y-m-d H:i:s')
             ]);
             $this->postTable->insert($params);
+            $this->flash->success("L'article à bien été créé");
             return $this->redirect('admin.blog.index');
         }
 
