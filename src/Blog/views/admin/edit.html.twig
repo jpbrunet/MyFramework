@@ -1,0 +1,40 @@
+{% extends '@admin/layout.html.twig' %}
+{% set title = "Editer l'articles" %}
+
+{% block style %}
+    <style>
+        main{
+            margin-top: 4em;
+        }
+        .table td{
+            vertical-align: middle;
+            padding: 0.25em 0.75em;
+        }
+        .btn{
+            display: flex;
+            padding: 0.5em;
+            width: 25%;
+            justify-content: center;
+            align-items: center;
+        }
+        .btn-rounded{
+            border-radius: 50%;
+        }
+    </style>
+{% endblock %}
+
+{% block title title %}
+
+{% block body %}
+    <div class="main">
+        <h1>Éditer l'article {{ item.name }}</h1>
+
+        <form action="{{ path('admin.blog.edit', { id: item.id }) }}" method="post">
+            {% include '@blog/admin/form.html.twig' %}
+            <button class="btn btn-primary btn-block" type="submit">
+                Éditer
+            </button>
+        </form>
+
+    </div>
+{% endblock %}

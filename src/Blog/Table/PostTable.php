@@ -54,4 +54,53 @@ class PostTable
         $query->execute([$id]);
         return $query->fetch() ?: null;
     }
+
+    /**
+     * Update fields for one posts in BDD
+     * @param int $id
+     * @param array $params
+     * @return bool
+     */
+    public function update(int $id, array $params): bool
+    {
+        $fieldQuery = $this->buildFieldQuery($params);
+        $params['id'] = $id;
+        $statement = $this->pdo->prepare("UPDATE posts SET $fieldQuery WHERE id = :id");
+        return $statement->execute($params);
+    }
+
+    /**
+     * Insert a new post
+     * @param array $params
+     * @return bool
+     */
+    public function insert(array $params): bool
+    {
+        $fields = array_keys($params);
+        $values = array_map(function ($field) {
+            return ':' . $field;
+        }, $fields);
+
+        $fieldQuery = $this->buildFieldQuery($params);
+        $statement = $this->pdo->prepare("INSERT INTO posts (" . join(',', $fields) . ") VALUES ( " . join(',', $values) . ")");
+        return $statement->execute($params);
+    }
+
+    /**
+     * Delete one post
+     * @param int $id
+     * @return bool
+     */
+    public function delete(int $id): bool
+    {
+        $statement = $this->pdo->prepare('DELETE FROM posts WHERE id = ?');
+        return $statement->execute([$id]);
+    }
+
+    private function buildFieldQuery(array $params)
+    {
+        return join(', ', array_map(function ($field) {
+            return "$field = :$field";
+        }, array_keys($params)));
+    }
 }
