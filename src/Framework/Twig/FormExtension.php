@@ -4,6 +4,7 @@ namespace App\Framework\Twig;
 
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
+use function DI\string;
 
 /**
  * Generate a form fields
@@ -35,17 +36,17 @@ class FormExtension extends AbstractExtension
      * @param string $key
      * @param $value
      * @param string|null $label
-     * @param array $option
+     * @param array $options
      * @return string
      */
-    public function field(array $context, string $key, $value, ?string $label = null, array $option = []): string
+    public function field(array $context, string $key, $value, ?string $label = null, array $options = []): string
     {
-        $type = $option['type'] ?? 'text';
+        $type = $options['type'] ?? 'text';
         $error = $this->getErrorsHTML($context, $key);
         $class = 'form-group';
         $value = $this->convertValue($value);
         $attributes = [
-            'class' => trim('form-control ' . ($option['class'] ?? "")),
+            'class' => trim('form-control ' . ($options['class'] ?? "")),
             'id' => $key,
             'name' => $key
         ];
@@ -56,6 +57,8 @@ class FormExtension extends AbstractExtension
         }
         if ($type === 'textarea') {
             $input = $this->textarea($value, $attributes);
+        } elseif (array_key_exists("options", $options)) {
+            $input = $this->select($value, $options['options'], $attributes);
         } else {
             $input = $this->input($value, $attributes);
         }
@@ -93,7 +96,7 @@ class FormExtension extends AbstractExtension
      */
     private function textarea(?string $value, array $attributes): string
     {
-        return "<textarea " . $this->getHTMLFromArray($attributes) .">{$value}</textarea>";
+        return "<textarea " . $this->getHTMLFromArray($attributes) . ">{$value}</textarea>";
     }
 
     /**
@@ -104,7 +107,23 @@ class FormExtension extends AbstractExtension
      */
     private function input(?string $value, array $attributes): string
     {
-        return "<input type=\"text\" ". $this->getHTMLFromArray($attributes) . " value=\"{$value}\">";
+        return "<input type=\"text\" " . $this->getHTMLFromArray($attributes) . " value=\"{$value}\">";
+    }
+
+    /**
+     * Generate a <select> field
+     * @param string|null $value
+     * @param array $options
+     * @param array $attributes
+     * @return string
+     */
+    private function select(?string $value, array $options, array $attributes)
+    {
+        $htmlOptions = array_reduce(array_keys($options), function (string $html, string $key) use ($options, $value) {
+            $params = ['value' => $key, 'selected' => $key === $value];
+            return $html . '<option ' . $this->getHTMLFromArray($params) .'>'. $options[$key] .'</option>';
+        }, "");
+        return "<select " . $this->getHTMLFromArray($attributes) . ">{$htmlOptions}</select>";
     }
 
     /**
@@ -114,9 +133,15 @@ class FormExtension extends AbstractExtension
      */
     private function getHTMLFromArray(array $attributes)
     {
-        return implode(' ', array_map(function ($key, $value) {
-            return "{$key}=\"{$value}\"";
-        }, array_keys($attributes), $attributes));
+        $htmlParts = [];
+        foreach ($attributes as $key => $value) {
+            if ($value === true) {
+                $htmlParts[] = (string) $key;
+            } elseif ($value !== false) {
+                $htmlParts[] = "$key=\"$value\"";
+            }
+        }
+        return implode(' ', $htmlParts);
     }
 
     private function convertValue($value): string
@@ -124,6 +149,6 @@ class FormExtension extends AbstractExtension
         if ($value instanceof \DateTime) {
             return $value->format('Y-m-d H:i:s');
         }
-        return (string) $value;
+        return (string)$value;
     }
 }

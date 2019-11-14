@@ -2,8 +2,15 @@
 
 namespace App\Framework;
 
+use App\Blog\Table\CategoryTable;
+use App\Framework\Database\Table;
 use App\Framework\Validator\ValidationError;
+use PDO;
 
+/**
+ * Class Validator
+ * @package App\Framework
+ */
 class Validator
 {
     /**
@@ -66,6 +73,12 @@ class Validator
         return $this->errors;
     }
 
+    /**
+     * @param string $key
+     * @param int|null $min
+     * @param int|null $max
+     * @return $this
+     */
     public function length(string $key, ?int $min, ?int $max = null): self
     {
         $value = $this->getValue($key);
@@ -106,6 +119,11 @@ class Validator
         return $this;
     }
 
+    /**
+     * @param string $key
+     * @param string $format
+     * @return $this
+     */
     public function dateTime(string $key, string $format = 'Y-m-d H:i:s'): self
     {
         $value = $this->getValue($key);
@@ -117,9 +135,29 @@ class Validator
         return $this;
     }
 
+    /**
+     * @return bool
+     */
     public function isValid(): bool
     {
         return empty($this->errors);
+    }
+
+    /**
+     * @param string $key
+     * @param string $table
+     * @param PDO $pdo
+     * @return $this
+     */
+    public function exists(string $key, string $table, PDO $pdo): self
+    {
+        $value = $this->getValue($key);
+        $statement = $pdo->prepare("SELECT id FROM {$table} WHERE id = ?");
+        $statement->execute([$value]);
+        if ($statement->fetchColumn() === false) {
+            $this->addError($key, 'exists', [$table]);
+        }
+        return $this;
     }
 
     /**

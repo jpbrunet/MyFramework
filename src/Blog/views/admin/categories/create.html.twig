@@ -27,10 +27,10 @@
 
 {% block body %}
     <div class="main">
-        <h1>Ajouter un article {{ item.name }}</h1>
+        <h1>Ajouter une catégorie</h1>
 
-        <form action="{{ path('admin.blog.create') }}" method="post">
-            {% include '@blog/admin/form.html.twig' %}
+        <form action="{{ path(routePrefix ~ '.create') }}" method="post">
+            {% include viewPath ~ '/form.html.twig' %}
             <button class="btn btn-primary btn-block" type="submit">
                 Nouveau
             </button>

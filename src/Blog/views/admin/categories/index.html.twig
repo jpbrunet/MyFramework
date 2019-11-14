@@ -1,0 +1,66 @@
+{% extends '@admin/layout.html.twig' %}
+{% set title = "Editer les articles" %}
+{% block siteTitle "Mes articles" %}
+{% block style %}
+    <style>
+        main{
+            margin-top: 4em;
+        }
+        .table td{
+            vertical-align: middle;
+            padding: 0.25em 0.75em;
+        }
+        .btn{
+            display: flex;
+            padding: 0.5em;
+            justify-content: center;
+            align-items: center;
+        }
+        .btn-rounded{
+            border-radius: 50%;
+        }
+    </style>
+{% endblock %}
+
+{% block title title %}
+
+{% block body %}
+    <div class="main">
+        <div class="text-right">
+            <a href="{{ path(routePrefix ~ '.create') }}" class="btn btn-success btn rounded">
+                <i class="fas fa-plus fa-2x pr-3"></i>
+                Ajouter une catégorie
+            </a>
+        </div>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Titre</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in items%}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.name }}</td>
+                    <td class="d-flex justify-content-around">
+                        <a href="{{ path( routePrefix ~ '.edit', {id: item.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i></a>
+                        <form action="{{ path( routePrefix ~ '.delete', {id: item.id} ) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr ?')">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button class="btn btn-danger">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-center mt-5">
+            {{ paginate(items, routePrefix ~ '.index') }}
+        </div>
+    </div>
+{% endblock %}

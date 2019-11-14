@@ -11,23 +11,31 @@ use Symfony\Component\Console\Output\NullOutput;
 
 class DatabaseTestCase extends TestCase
 {
-
-    /**
-     * @var PDO
-     */
-    protected $pdo;
-
-    /**
-     * @var Manager
-     */
-    private $manager;
-
-    protected function setUp(): void
+    public function seedDatabase(PDO $pdo)
     {
-        $pdo = new PDO('sqlite:', null, null, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-        ]);
+        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_BOTH);
+        $this->getManager($pdo)->migrate('test');
+        $this->getManager($pdo)->seed('test');
+        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
+    }
 
+    public function migrateDatabase(PDO $pdo)
+    {
+        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_BOTH);
+        $this->getManager($pdo)->migrate('test');
+        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
+    }
+
+    public function getPDO()
+    {
+        return new PDO('sqlite::memory:', null, null, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ
+        ]);
+    }
+
+    public function getManager(PDO $pdo)
+    {
         $configArray = require('phinx.php');
         $configArray['environments']['test'] = [
             'adapter' => 'sqlite',
@@ -35,18 +43,7 @@ class DatabaseTestCase extends TestCase
             'database' => 'test'
         ];
         $config = new Config($configArray);
-        $manager = new Manager($config, new StringInput(' '), new NullOutput());
-        $this->manager = $manager;
-        $manager->migrate('test');
-        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
-        $this->pdo = $pdo;
-    }
-
-    public function seedDatabase()
-    {
-        $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_BOTH);
-        $this->manager->seed('test');
-        $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
+        return new Manager($config, new StringInput(' '), new NullOutput());
     }
 
 }
