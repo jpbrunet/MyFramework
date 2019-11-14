@@ -5,6 +5,7 @@ use App\Framework\Router\RouterTwigExtension;
 use App\Framework\Session\PhpSession;
 use App\Framework\Session\SessionInterface;
 use App\Framework\Twig\FlashExtension;
+use App\Framework\Twig\FormExtension;
 use App\Framework\Twig\PagerFantaExtension;
 use App\Framework\Twig\TextExtension;
 use App\Framework\Twig\TimeExtension;
@@ -26,7 +27,8 @@ return [
         get(PagerFantaExtension::class),
         get(TextExtension::class),
         get(TimeExtension::class),
-        get(FlashExtension::class)
+        get(FlashExtension::class),
+        get(FormExtension::class)
     ],
     SessionInterface::class => create(PhpSession::class),
     Router::class => create(),
