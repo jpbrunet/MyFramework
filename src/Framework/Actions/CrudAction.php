@@ -34,7 +34,7 @@ class CrudAction
     /**
      * @var Table
      */
-    private $table;
+    protected $table;
     /**
      * @var FlashService
      */
@@ -61,7 +61,7 @@ class CrudAction
     use RouteAwareAction;
 
     /**
-     * BlogAction constructor.
+     * PostShowAction constructor.
      * @param RendererInterface $renderer
      * @param Router $router
      * @param $table

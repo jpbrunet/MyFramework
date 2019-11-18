@@ -6,6 +6,7 @@ use App\Blog\Entity\Post;
 use App\Blog\Table\CategoryTable;
 use App\Framework\Actions\CrudAction;
 use App\Framework\Session\FlashService;
+use App\Framework\Validator;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
 use Psr\Http\Message\ServerRequestInterface;
@@ -29,8 +30,12 @@ class CategoryCrudAction extends CrudAction
      * @param CategoryTable $table
      * @param FlashService $flash
      */
-    public function __construct(RendererInterface $renderer, Router $router, CategoryTable $table, FlashService $flash)
-    {
+    public function __construct(
+        RendererInterface $renderer,
+        Router $router,
+        CategoryTable $table,
+        FlashService $flash
+    ) {
         parent::__construct($renderer, $router, $table, $flash);
     }
 
@@ -51,17 +56,14 @@ class CategoryCrudAction extends CrudAction
      */
     protected function getParams(ServerRequestInterface $request)
     {
-
-        $params = array_filter($request->getParsedBody(), function ($key) {
+        return array_filter($request->getParsedBody(), function ($key) {
             return in_array($key, ['name', 'slug']);
         }, ARRAY_FILTER_USE_KEY);
-
-        return $params;
     }
 
     /**
      * @param ServerRequestInterface $request
-     * @return \App\Framework\Validator
+     * @return Validator
      */
     protected function getValidator(ServerRequestInterface $request)
     {
@@ -69,6 +71,7 @@ class CategoryCrudAction extends CrudAction
             ->required('name', 'slug')
             ->length('name', 2, 250)
             ->length('slug', 2, 250)
+            ->unique('slug', $this->table->getTable(), $this->table->getPdo(), $request->getAttribute('id'))
             ->slug('slug');
     }
 }

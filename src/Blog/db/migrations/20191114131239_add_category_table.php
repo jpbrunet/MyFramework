@@ -35,6 +35,7 @@ class AddCategoryTable extends AbstractMigration
         $this->table('categories')
             ->addColumn('name', PostgresAdapter::PHINX_TYPE_STRING)
             ->addColumn('slug', PostgresAdapter::PHINX_TYPE_STRING)
+            ->addIndex('slug', ['unique' => true])
             ->create();
     }
 }

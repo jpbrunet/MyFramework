@@ -1,9 +1,35 @@
 {% extends 'layout.html.twig' %}
 {% set title = post.name %}
-{% set  subTitle = post.updated_at | ago %}
+
 {% block siteTitle title %}
-{% block title title %}
+{% block mainTitle %}
+    <h1>{{ title }}</h1>
+    {% if post.category_id %}
+        <a class="subheading text-light" href="{{ path('blog.category', { slug: post.category_slug }) }}">
+            {{ post.category_name }}
+        </a>
+    {% endif %}
+    <p class="subheading pt-5 mb-0">{{ post.updated_at | ago }}</p>
+
+{% endblock %}
 
 {% block body %}
     {{ post.content | nl2br | raw }}
+{% endblock %}
+{% block aside %}
+    <div class="card">
+        <div class="card-header bg-secondary text-light">
+            <h5 class="card-title">Catégories</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="list-group list-group-flush">
+                {% for c in categories %}
+                    <a class="list-group-item {% if c.id == category.id %}active bg-secondary{% endif %}"
+                       href="{{ path('blog.category', {slug: c.slug}) }}">
+                        {{ c.name }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 {% endblock %}

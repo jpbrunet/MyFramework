@@ -11,19 +11,34 @@
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="/assets/css/clean-blog.css">
 
-    <title>{% block siteTitle "Mon site" %}</title>
+    <title>{% block siteTitle %}{% endblock %}</title>
 </head>
 <body>
 {% block navigation %}
     {{ include('navigation.html.twig') }}
 {% endblock %}
-{% block mastHead %}
-    {{ include('masthead.html.twig') }}
-{% endblock %}
-<main class="container">
-    {% block body %}
-
-    {% endblock %}
+<header class="masthead mb-0" style="background-image: url('img/home-bg.jpg')">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <div class="site-heading">
+                    {% block mainTitle %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<main class="container-fluid">
+    <div class="row">
+        <div class="col-md-9 pt-5">
+        {% block body %}{% endblock %}
+        </div>
+        <div class="col-md-3 border-left pt-5">
+        {% block aside %}{% endblock %}
+        </div>
+    </div>
 </main>
 
 <script src="/assets/vendor/jquery/jquery.min.js"></script>

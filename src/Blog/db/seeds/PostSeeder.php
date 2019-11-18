@@ -15,8 +15,24 @@ class PostSeeder extends AbstractSeed
      */
     public function run()
     {
+        // SEEDING CATEGORIES
         $data = [];
         $faker = \Faker\Factory::create('fr_FR');
+        for ($i = 0; $i < 5; ++$i) {
+            $name = $faker->catchPhrase;
+//            var_dump($name); die();
+            $slug = Generator::createSlug($name);
+            $data[] = [
+                'name' => $name,
+                'slug' => $slug,
+            ];
+        }
+        $this->table('categories')
+            ->insert($data)
+            ->save();
+
+        // SEEDING POSTS
+        $data = [];
         for ($i = 0; $i < 100; ++$i) {
             $name = $faker->catchPhrase;
             $slug = Generator::createSlug($name);
@@ -24,6 +40,7 @@ class PostSeeder extends AbstractSeed
             $data[] = [
                 'name' => $name,
                 'slug' => $slug,
+                'category_id' => rand(1, 5),
                 'content' => $faker->paragraphs(5, true),
                 'created_at' => date('Y-m-d H:i:s', $date),
                 'updated_at' => date('Y-m-d H:i:s', $date)

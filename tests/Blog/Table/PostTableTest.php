@@ -5,6 +5,7 @@ namespace Tests\Blog\Table;
 
 use App\Blog\Entity\Post;
 use App\Blog\Table\PostTable;
+use App\Framework\Database\NoRecordException;
 use Tests\DatabaseTestCase;
 
 class PostTableTest extends DatabaseTestCase
@@ -32,11 +33,13 @@ class PostTableTest extends DatabaseTestCase
 
     public function testFindNotFoundRecord()
     {
+        $this->expectException(NoRecordException::class);
         $post = $this->postTable->find(1);
         $this->assertNull($post);
     }
 
-    public function testUpdate(){
+    public function testUpdate()
+    {
         $this->seedDatabase($this->postTable->getPdo());
         $this->postTable->update(1, ['name' => 'Salut les copains', 'slug' => 'salut-les-copains']);
         $post = $this->postTable->find(1);
@@ -57,10 +60,10 @@ class PostTableTest extends DatabaseTestCase
         $this->postTable->insert(['name' => 'Salut les copains', 'slug' => 'salut-les-copains']);
         $this->postTable->insert(['name' => 'Salut les gens', 'slug' => 'salut-les-gens']);
         $count = $this->postTable->getPdo()->query('SELECT COUNT(id) FROM posts')->fetchColumn();
-        $this->assertEquals(2, (int) $count);
+        $this->assertEquals(2, (int)$count);
         $this->postTable->delete($this->postTable->getPdo()->lastInsertId());
         $count = $this->postTable->getPdo()->query('SELECT COUNT(id) FROM posts')->fetchColumn();
-        $this->assertEquals(1, (int) $count);
+        $this->assertEquals(1, (int)$count);
 
     }
 }
