@@ -12,7 +12,7 @@ use App\Framework\Twig\TimeExtension;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
 use Psr\Container\ContainerInterface;
-use function DI\create;
+
 use function DI\get;
 
 return [
@@ -30,8 +30,8 @@ return [
         get(FlashExtension::class),
         get(FormExtension::class)
     ],
-    SessionInterface::class => create(PhpSession::class),
-    Router::class => create(),
+    SessionInterface::class => \DI\create(PhpSession::class),
+    Router::class => \DI\create(),
     RendererInterface::class => DI\factory(TwigRendererFactory::class),
     PDO::class => function (ContainerInterface $c) {
         $pdo = new PDO(

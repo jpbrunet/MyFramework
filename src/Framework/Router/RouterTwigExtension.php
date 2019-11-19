@@ -5,6 +5,7 @@ namespace App\Framework\Router;
 use Framework\Router;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
+use function Couchbase\fastlzDecompress;
 
 class RouterTwigExtension extends AbstractExtension
 {
@@ -28,7 +29,8 @@ class RouterTwigExtension extends AbstractExtension
     public function getFunctions()
     {
         return [
-            new TwigFunction('path', [$this, 'pathFor'])
+            new TwigFunction('path', [$this, 'pathFor']),
+            new TwigFunction('is_subpath', [$this, 'isSubpath'])
         ];
     }
 
@@ -40,5 +42,12 @@ class RouterTwigExtension extends AbstractExtension
     public function pathFor(string $path, array $params = []): string
     {
         return $this->router->generateURI($path, $params);
+    }
+
+    public function isSubpath(string $path): bool
+    {
+        $uri = $_SERVER['REQUEST_URI'] ?? '/';
+        $expectedURI = $this->router->generateURI($path);
+        return strpos($uri, $expectedURI) !== false;
     }
 }

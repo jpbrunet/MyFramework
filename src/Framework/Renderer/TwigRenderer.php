@@ -10,7 +10,6 @@ namespace App\Framework\Renderer;
 
 use Framework\Renderer\RendererInterface;
 use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
 
 class TwigRenderer implements RendererInterface
 {
@@ -19,6 +18,14 @@ class TwigRenderer implements RendererInterface
      * @var Environment
      */
     private $twig;
+
+    /**
+     * @return Environment
+     */
+    public function getTwig(): Environment
+    {
+        return $this->twig;
+    }
 
     public function __construct(Environment $twig)
     {

@@ -1,0 +1,10 @@
+<li class="nav-item">
+    <a class="nav-link border rounded mx-1 {{ is_subpath('admin.blog.index') ? 'active' }}" href="{{ path('admin.blog.index') }}" >
+        Articles
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link border rounded mx-1 {{ is_subpath('admin.blog.category.index') ? 'active' }}" href="{{ path('admin.blog.category.index') }}">
+        Catégories
+    </a>
+</li>

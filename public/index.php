@@ -9,6 +9,7 @@ $modules = [
 ];
 
 $builder = new \DI\ContainerBuilder();
+$builder->useAutowiring(true);
 $builder->addDefinitions(dirname(__DIR__) . '/config/config.php');
 
 foreach ($modules as $module) {

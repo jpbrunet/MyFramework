@@ -1,0 +1,10 @@
+<div class="col-sm-4">
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">Article{% if count > 1 %}s{% endif %} <span class="small float-right">({{ count }})</span></h4>
+        </div>
+        <div class="card-block">
+            <a href="{{ path('admin.blog.index') }}" class="btn btn-secondary btn-block">Gérer les articles</a>
+        </div>
+    </div>
+</div>

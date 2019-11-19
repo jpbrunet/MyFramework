@@ -77,6 +77,9 @@ class Table
             ->setCurrentPage($currentPage);
     }
 
+    /**
+     * @return string
+     */
     protected function paginationQuery()
     {
         return 'SELECT * FROM ' . $this->table;
@@ -134,6 +137,15 @@ class Table
     public function find(int $id)
     {
         return $this->fetchOrFail('SELECT * FROM ' . $this->table . ' WHERE id = ?', [$id]);
+    }
+
+    /**
+     * Counts the number of records
+     * @return int
+     */
+    public function count(): int
+    {
+        return $this->fetchColumn("SELECT COUNT(id) FROM {$this->table}");
     }
 
     /**
@@ -216,5 +228,21 @@ class Table
         return join(', ', array_map(function ($field) {
             return "$field = :$field";
         }, array_keys($params)));
+    }
+
+    /**
+     * Get a first column
+     * @param string $query
+     * @param array $params
+     * @return mixed
+     */
+    private function fetchColumn(string $query, array $params = [])
+    {
+        $query = $this->pdo->prepare($query);
+        $query->execute($params);
+        if ($this->entity) {
+            $query->setFetchMode(\PDO::FETCH_CLASS, $this->entity);
+        }
+        return $query->fetchColumn();
     }
 }
