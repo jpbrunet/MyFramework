@@ -41,17 +41,24 @@
             </tr>
             </thead>
             <tbody>
+            {% set token_input = csrf_input() %}
             {% for item in items%}
                 <tr>
                     <td>{{ item.id }}</td>
                     <td>{{ item.name }}</td>
                     <td class="d-flex justify-content-around">
-                        <a href="{{ path( routePrefix ~ '.edit', {id: item.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i></a>
-                        <form action="{{ path( routePrefix ~ '.delete', {id: item.id} ) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr ?')">
+                        <a href="{{ path( routePrefix ~ '.edit', {id: item.id}) }}" class="btn btn-primary">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form action="{{ path( routePrefix ~ '.delete', {id: item.id} ) }}"
+                              method="POST"
+                              onsubmit="return confirm('Êtes-vous sûr ?')">
+
                             <input type="hidden" name="_method" value="DELETE">
                             <button class="btn btn-danger">
                                 <i class="fas fa-trash"></i>
                             </button>
+                            {{ token_input | raw }}
                         </form>
                     </td>
                 </tr>

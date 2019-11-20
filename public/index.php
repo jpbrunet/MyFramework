@@ -3,6 +3,7 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 
 use App\Admin\AdminModule;
 use App\Blog\BlogModule;
+use App\Framework\Middleware\CsrfMiddleware;
 use Framework\App;
 use GuzzleHttp\Psr7\ServerRequest;
 use App\Framework\Middleware\DispatcherMiddleware;
@@ -23,6 +24,7 @@ $app = (new App(dirname(__DIR__) . '/config/config.php'))
     ->pipe(Whoops::class)
     ->pipe(TrailingSlashMiddleware::class)
     ->pipe(MethodMiddleware::class)
+    ->pipe(CsrfMiddleware::class)
     ->pipe(RouterMiddleware::class)
     ->pipe(DispatcherMiddleware::class)
     ->pipe(NotFoundMiddleware::class)
