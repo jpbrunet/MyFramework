@@ -1,5 +1,7 @@
 <?php
-require dirname(__DIR__) . '/vendor/autoload.php';
+chdir(dirname(__DIR__));
+
+require 'vendor/autoload.php';
 
 use App\Admin\AdminModule;
 use App\Blog\BlogModule;
@@ -18,7 +20,7 @@ $modules = [
     BlogModule::class
 ];
 
-$app = (new App(dirname(__DIR__) . '/config/config.php'))
+$app = (new App('config/config.php'))
     ->addModule(AdminModule::class)
     ->addModule(BlogModule::class)
     ->pipe(Whoops::class)

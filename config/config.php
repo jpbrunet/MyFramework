@@ -2,6 +2,7 @@
 
 use App\Framework\Middleware\CsrfMiddleware;
 use App\Framework\Renderer\TwigRendererFactory;
+use App\Framework\Router\RouterFactory;
 use App\Framework\Router\RouterTwigExtension;
 use App\Framework\Session\PhpSession;
 use App\Framework\Session\SessionInterface;
@@ -18,6 +19,7 @@ use Psr\Container\ContainerInterface;
 use function DI\get;
 
 return [
+    'env' => \DI\env('ENV', 'production'),
     'database.host' => 'localhost',
     'database.port' => '5432',
     'database.user' => 'jeep',
@@ -34,9 +36,9 @@ return [
         get(CsrfExtension::class)
     ],
     SessionInterface::class => \DI\create(PhpSession::class),
-    CsrfMiddleware::class => \DI\create()->constructor(get(SessionInterface::class)),
-    Router::class => \DI\create(),
-    RendererInterface::class => DI\factory(TwigRendererFactory::class),
+    CsrfMiddleware::class => \DI\create()->constructor(get(SessionInterface::class))->lazy(),
+    Router::class => \DI\factory(RouterFactory::class),
+    RendererInterface::class => \DI\factory(TwigRendererFactory::class),
     PDO::class => function (ContainerInterface $c) {
         $pdo = new PDO(
             'pgsql:host=' . $c->get('database.host') . ';port=' . $c->get('database.port') . ';dbname=' . $c->get('database.name') . ';user=' . $c->get('database.user') . ';password=' . $c->get('database.pass')

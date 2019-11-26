@@ -2,6 +2,7 @@
 
 namespace Framework;
 
+use App\Framework\Database\Query;
 use DI\ContainerBuilder;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -78,7 +79,7 @@ class App implements RequestHandlerInterface
         if (is_null($middleware)) {
             throw new \Exception('Aucun middleware n\'a intercepté cette requête');
         } elseif (is_callable($middleware)) {
-            return call_user_func_array($middleware, [$request, [$this, 'handle']]) ;
+            return call_user_func_array($middleware, [$request, [$this, 'handle']]);
         } elseif ($middleware instanceof MiddlewareInterface) {
             return $middleware->process($request, $this);
         }
@@ -91,6 +92,12 @@ class App implements RequestHandlerInterface
      */
     public function run(ServerRequestInterface $request): ResponseInterface
     {
+        $test = (new Query())
+            ->from('posts')
+            ->select('name')
+            ->where('a = :a OR b = :b', 'c = :c');
+        var_dump($test->__toString());
+        die();
         foreach ($this->modules as $module) {
             $this->getContainer()->get($module);
         }
@@ -106,6 +113,22 @@ class App implements RequestHandlerInterface
     {
         if ($this->container === null) {
             $builder = new ContainerBuilder();
+            $env = trim(getenv('ENV'));
+//            var_dump('ENV:', $env);
+            $env =  $env ?? 'production';
+            if ($env === 'production') {
+                $cache = 'tmp/di/cache';
+                $proxies = 'tmp/di/proxies';
+                if (!file_exists($cache)) {
+                    mkdir($cache, 0777, true);
+                }
+                if (!file_exists($proxies)) {
+                    mkdir($proxies, 0777, true);
+                }
+                $builder->enableCompilation($cache);
+                $builder->enableDefinitionCache();
+                $builder->writeProxiesToFile(true, $proxies);
+            }
             $builder->addDefinitions($this->definition);
             $builder->useAutowiring(true);
 

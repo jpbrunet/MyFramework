@@ -60,7 +60,7 @@ class RouterTest extends TestCase
         $this->assertEquals('post.show', $route->getName());
         $this->assertEquals('Hello', call_user_func($route->getCallBack(), $request));
         $this->assertEquals(['slug' => 'mon-slug', 'id' => '8'], $route->getParams());
-        // Test invalid url
+        // QueryTest invalid url
         $route = $this->router->match(new ServerRequest('GET', '/mon_slug-8'));
         $this->assertEquals(null, $route);
     }
